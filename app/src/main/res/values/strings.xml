@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Andar WiFi Analyzer</string>
+    <string name="defensive_use_notice">Alat diagnostik jaringan defensif — hanya untuk jaringan milik sendiri atau lab dengan izin resmi.</string>
+    <string name="privacy_external_endpoints_notice">Data pemindaian WiFi disimpan secara lokal. Pemeriksaan IP Publik dan Uji Kecepatan menggunakan koneksi HTTPS ke api.ipify.org, ipwho.is, dan speed.cloudflare.com.</string>
 </resources>
