@@ -1,0 +1,8 @@
+{
+  "name": "Andar WiFi Analyzer",
+  "description": "Alat lengkap analisis WiFi oleh Andar: pemindai saluran 2.4GHz & 5GHz, uji kecepatan download/upload & ping, radar sinyal, serta diagnostik jaringan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
