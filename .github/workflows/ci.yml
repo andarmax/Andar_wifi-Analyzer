@@ -43,12 +43,6 @@ jobs:
       - name: Run full check
         run: ./gradlew check --no-daemon
 
-      - name: Inspect Room schema output
-        if: always()
-        run: |
-          find app -type f -name '*.json' -print
-          find app/build -type d \( -iname '*room*' -o -iname '*schema*' \) -print
-
       - name: Upload unit test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -76,6 +70,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: room-schema
-          path: app/schemas/*.json
+          path: app/schemas/**/*.json
           if-no-files-found: error
           retention-days: 14
