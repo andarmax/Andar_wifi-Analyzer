@@ -142,7 +142,7 @@ fun MainApp(viewModel: WifiViewModel) {
                     "Sistem Android mewajibkan izin Lokasi dan Perangkat WiFi Sekitar agar aplikasi dapat membaca SSID, BSSID, frekuensi saluran, dan kekuatan sinyal dBm.\n\n" +
                             "Kebijakan Privasi & Jaringan:\n" +
                             "• Hasil pemindaian WiFi dan riwayat uji kecepatan hanya disimpan secara lokal di perangkat Anda.\n" +
-                            "• Saat memeriksa IP Publik/ISP atau menjalankan Uji Kecepatan, aplikasi menghubungi layanan eksternal melalui HTTPS (api.ipify.org, ipwho.is, dan speed.cloudflare.com)."
+                            "• Pemeriksaan IP Publik/ISP memakai HTTPS ke ipinfo.io dan fallback api.ipify.org. Uji Kecepatan memakai speed.cloudflare.com, 1.1.1.1, Google generate_204, dan fallback download proof.ovh.net. Penyedia layanan dapat melihat IP jaringan Anda."
                 )
             },
             confirmButton = {

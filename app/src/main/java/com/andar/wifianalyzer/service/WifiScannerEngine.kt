@@ -423,12 +423,17 @@ open class WifiScannerEngine(private val context: Context) {
     ): Boolean = suspendCancellableCoroutine { cont ->
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action != WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
+                    return
+                }
                 try {
                     appContext.unregisterReceiver(this)
                 } catch (_: Exception) {}
-                val updated = intent?.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false) ?: false
                 if (cont.isActive) {
-                    cont.resume(updated)
+                    // This system broadcast must be exported on Android because it
+                    // originates from the privileged WiFi service. Do not trust
+                    // extras from the broadcast; read scanResults from WifiManager.
+                    cont.resume(true)
                 }
             }
         }
@@ -436,9 +441,19 @@ open class WifiScannerEngine(private val context: Context) {
         try {
             val filter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                appContext.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+                ContextCompat.registerReceiver(
+                    appContext,
+                    receiver,
+                    filter,
+                    ContextCompat.RECEIVER_EXPORTED
+                )
             } else {
-                appContext.registerReceiver(receiver, filter)
+                ContextCompat.registerReceiver(
+                    appContext,
+                    receiver,
+                    filter,
+                    ContextCompat.RECEIVER_EXPORTED
+                )
             }
 
             cont.invokeOnCancellation {

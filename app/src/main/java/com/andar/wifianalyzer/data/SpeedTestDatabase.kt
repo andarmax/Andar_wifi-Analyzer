@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [SpeedTestEntity::class], version = 1, exportSchema = false)
+@Database(entities = [SpeedTestEntity::class], version = 1, exportSchema = true)
 abstract class SpeedTestDatabase : RoomDatabase() {
     abstract fun speedTestDao(): SpeedTestDao
 
@@ -19,8 +19,7 @@ abstract class SpeedTestDatabase : RoomDatabase() {
                     context.applicationContext,
                     SpeedTestDatabase::class.java,
                     "wifi_speed_tests.db"
-                ).fallbackToDestructiveMigration(dropAllTables = true)
-                    .build()
+                ).build()
                 INSTANCE = instance
                 instance
             }

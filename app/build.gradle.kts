@@ -71,10 +71,21 @@ android {
     }
   }
 
+  sourceSets {
+    getByName("androidTest") {
+      assets.srcDir("$projectDir/schemas")
+    }
+  }
+
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
   }
+}
+
+ksp {
+  arg("room.schemaLocation", "$projectDir/schemas")
+  arg("room.incremental", "true")
 }
 
 dependencies {

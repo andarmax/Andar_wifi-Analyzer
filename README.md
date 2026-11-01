@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.2.10-blue.svg?style=flat-square" alt="Kotlin"></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack_Compose-Material_3-blue.svg?style=flat-square" alt="Compose"></a>
-  <a href="https://developer.android.com/about/versions/oreo"><img src="https://img.shields.io/badge/Android-8.0+_API_26+-green.svg?style=flat-square" alt="Android Version"></a>
+  <a href="https://developer.android.com/about/versions/nougat"><img src="https://img.shields.io/badge/Android-7.0+_API_24+-green.svg?style=flat-square" alt="Android Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License"></a>
 </p>
 
@@ -59,7 +59,9 @@
   Sistem operasi Android mewajibkan izin `ACCESS_FINE_LOCATION` dan `NEARBY_WIFI_DEVICES` (Android 13+) serta layanan Lokasi yang aktif agar aplikasi dapat membaca SSID/BSSID hasil pemindaian WiFi.
 * **Koneksi Layanan Eksternal & Penyimpanan Lokal**
   * Hasil pemindaian WiFi dan riwayat uji kecepatan disimpan secara lokal di perangkat (`Room SQLite`) dan dikecualikan dari pencadangan awan (*cloud backup* / `allowBackup="false"`).
-  * Ketika fitur pemeriksaan **IP Publik/ISP** atau **Uji Kecepatan** dijalankan, aplikasi melakukan koneksi HTTPS ke layanan pihak ketiga (`https://api.ipify.org`, `https://ipwho.is`, dan `https://speed.cloudflare.com`).
+  * Ketika fitur pemeriksaan **IP Publik/ISP** dijalankan, aplikasi mengirim request HTTPS ke `https://ipinfo.io/json` dan, bila request utama gagal, mencoba `https://api.ipify.org?format=json`. Endpoint pertama dapat mengembalikan IP publik, organisasi, dan kota; endpoint fallback hanya digunakan untuk IP publik.
+  * Ketika **Uji Kecepatan** dijalankan, aplikasi mengirim request HTTPS ke Cloudflare (`speed.cloudflare.com`), `1.1.1.1`, Google `generate_204`, dan dapat memakai `proof.ovh.net` sebagai fallback download. Request tersebut mengungkapkan IP jaringan kepada penyedia layanan sebagaimana koneksi HTTPS biasa; tidak ada analytics atau tracking tambahan.
+  * Database Room mengekspor schema ke `app/schemas/` dan tidak memakai destructive migration. Karena repository ini hanya memiliki schema versi 1, perubahan schema berikutnya wajib menambahkan migration eksplisit agar riwayat pengguna tidak terhapus.
 
 ---
 
@@ -81,7 +83,7 @@
 ### Prasyarat
 * Android Studio (Ladybug / Meerkat atau lebih baru)
 * JDK 17+
-* Android SDK (`compileSdk = 36`, `targetSdk = 36`, `minSdk = 26`)
+* Android SDK (`compileSdk = 36`, `targetSdk = 36`, `minSdk = 24`)
 
 ### Perintah Gradle (Windows PowerShell / CMD)
 ```powershell
@@ -101,11 +103,13 @@ File APK hasil build debug akan tersedia di:
 `app/build/outputs/apk/debug/app-debug.apk`
 
 ### Konfigurasi Release Signing (Opsional)
-Build `release` tidak menyertakan keystore di dalam repositori. Jika ingin menandatangani APK/AAB `release`, sediakan variabel lingkungan atau properti Gradle berikut secara lokal:
-* `RELEASE_STORE_FILE`
-* `RELEASE_STORE_PASSWORD`
-* `RELEASE_KEY_ALIAS`
-* `RELEASE_KEY_PASSWORD`
+Build `release` tidak menyertakan keystore di dalam repositori. Signing hanya aktif jika seluruh variabel lingkungan berikut tersedia secara lokal:
+* `KEYSTORE_PATH`
+* `STORE_PASSWORD`
+* `KEY_ALIAS` (opsional; default aman hanya berupa nama alias `upload`, bukan credential)
+* `KEY_PASSWORD`
+
+Jangan menyimpan nilai credential atau keystore di repository. Debug build tidak membutuhkan release signing.
 
 ---
 
