@@ -39,3 +39,37 @@ jobs:
 
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --no-daemon
+
+      - name: Run full check
+        run: ./gradlew check --no-daemon
+
+      - name: Upload unit test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload lint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Room schema
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: room-schema
+          path: app/schemas/*.json
+          if-no-files-found: error
+          retention-days: 14
